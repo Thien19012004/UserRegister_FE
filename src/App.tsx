@@ -30,15 +30,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
       <FloatingTextOverlay
-          phrases={[
-            "Auth3D",
-            "React",
-            "Framer Motion",
-            "TailwindCSS",
-            "Login",
-            "Sign Up",
-            "TypeScript",
-          ]}
+          phrases={["Authorization", "Login", "Sign Up", "Thien", "Haha", "Hoho", "Hehe"]}
           rows={7}
           density={5}
           speedMin={22}

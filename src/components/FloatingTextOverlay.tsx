@@ -14,7 +14,7 @@ function rand(min: number, max: number) {
 }
 
 export default function FloatingTextOverlay({
-  phrases = ["Auth3D", "Login", "Sign Up", "React", "Framer Motion", "Tailwind", "TypeScript"],
+  phrases = ["Authorization", "Login", "Sign Up", "Thien", "Haha", "Hoho", "Hehe"],
   rows = 6,
   density = 4,
   speedMin = 20,

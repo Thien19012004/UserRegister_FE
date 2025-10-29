@@ -107,8 +107,8 @@ export default function Home() {
       {/* ⚙️ Footer */}
       <footer className="bg-white/70 backdrop-blur-md text-center py-4 shadow-inner text-gray-600 text-sm">
         <p>
-          © {new Date().getFullYear()} Auth3D Demo — built with ❤️ by{" "}
-          <span className="font-medium text-indigo-500">Phạm Chí Thuần</span>
+          © {new Date().getFullYear()} Register Demo — built with ❤️ by{" "}
+          <span className="font-medium text-indigo-500">Đinh Đức Thiện</span>
         </p>
       </footer>
     </div>
