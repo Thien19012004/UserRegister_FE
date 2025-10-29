@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://userregister-be.onrender.com/";
+const API_URL = "https://userregister-be.onrender.com";
 
 export interface RegisterPayload {
   email: string;
