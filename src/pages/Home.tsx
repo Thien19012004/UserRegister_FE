@@ -35,7 +35,7 @@ export default function Home() {
       {/* 💫 Hero Section */}
       <main className="flex-1 flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
         <FloatingHeroText
-          title="Welcome to Auth3D 🌐"
+          title="Welcome to Registration UI 🌐"
           subtitle="Experience smooth, interactive 3D login and sign-up forms built with React + Framer Motion. Explore modern UI animation, form validation, and responsive design."
         />
 
