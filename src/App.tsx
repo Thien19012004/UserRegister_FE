@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Home from "./pages/Home";
 import "./index.css";
 import Login from "./pages/Login";
-import SignUp from "./pages/Signup";
+import SignUp from "./pages/SignUp";
 import FloatingTextOverlay from "./components/FloatingTextOverlay";
 import { AnimatePresence } from "framer-motion";
 
