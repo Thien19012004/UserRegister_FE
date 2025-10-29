@@ -15,7 +15,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-100 via-white to-blue-100 text-gray-800 overflow-hidden">
       {/* 🌟 Navbar */}
       <nav className="flex justify-between items-center px-8 py-4 bg-white/70 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <h1 className="text-2xl font-bold text-indigo-600">Auth3D Demo</h1>
+        <h1 className="text-2xl font-bold text-indigo-600">Register Demo</h1>
         <div className="flex gap-4">
           <Link
             to="/login"
