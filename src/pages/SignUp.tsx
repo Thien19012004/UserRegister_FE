@@ -1,9 +1,13 @@
 import { motion } from "framer-motion";
 import { useNavigate, Link } from "react-router-dom";
+import { useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../api/userApi";
 import RotatableCard from "../components/RotatableCard";
+import { useAuthContext } from '../auth/AuthProvider';
+import api from '../api/apiClient';
+import { tokenService } from '../auth/tokenService';
 
 interface FormData {
   email: string;
@@ -13,6 +17,40 @@ interface FormData {
 export default function SignUp() {
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
   const navigate = useNavigate();
+  const { accessToken } = useAuthContext();
+
+  useEffect(() => {
+    let mounted = true;
+    const check = async () => {
+      if (!accessToken) return;
+      try {
+        await api.get('/user/me');
+        if (mounted) navigate('/');
+      } catch (e) {
+        tokenService.setToken(null);
+      }
+    };
+    check();
+    return () => { mounted = false; };
+  }, [accessToken, navigate]);
+
+  // Listen for login events from other tabs and validate session then redirect
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === 'auth_event' && e.newValue && e.newValue.startsWith('login')) {
+        (async () => {
+          try {
+            await api.get('/user/me');
+            navigate('/');
+          } catch (err) {
+            tokenService.setToken(null);
+          }
+        })();
+      }
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, [navigate]);
 
   const mutation = useMutation({
     mutationFn: registerUser,
@@ -28,7 +66,7 @@ export default function SignUp() {
 
   return (
     <motion.div
-      className="flex h-screen items-center justify-center bg-gradient-to-br from-green-400 to-teal-500"
+      className="flex h-screen items-center justify-center bg-linear-to-br from-green-400 to-teal-500"
       initial={{ opacity: 0, x: -100 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 100 }}

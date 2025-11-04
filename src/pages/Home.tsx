@@ -2,33 +2,103 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import FloatingHeroText from "../components/FloatingHeroText";
 import FloatingHearts from "../components/FloatingHearts";
+import { useEffect, useState } from 'react';
+import { tokenService } from '../auth/tokenService';
+import api from '../api/apiClient';
+import { useAuthContext } from '../auth/AuthProvider';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<any | null>(null);
+  const [showDashboard, setShowDashboard] = useState(false);
+  const { logout, accessToken } = useAuthContext();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await api.get('/user/me');
+        setUserInfo(res.data || null);
+        setUserEmail(res.data?.email || null);
+      } catch (e) {
+        setUserInfo(null);
+        setUserEmail(null);
+      }
+    };
+    load();
+  }, []);
   return (
     <motion.div
-      className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-100 via-white to-blue-100 text-gray-800 overflow-hidden"
+      className="flex flex-col min-h-screen bg-linear-to-br from-indigo-100 via-white to-blue-100 text-gray-800 overflow-hidden"
       initial={{ opacity: 0, scale: 0.98 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.6, ease: "easeInOut" }}
     >
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-100 via-white to-blue-100 text-gray-800 overflow-hidden">
+    <div className="flex flex-col min-h-screen bg-linear-to-br from-indigo-100 via-white to-blue-100 text-gray-800 overflow-hidden">
       {/* 🌟 Navbar */}
       <nav className="flex justify-between items-center px-8 py-4 bg-white/70 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <h1 className="text-2xl font-bold text-indigo-600">Register Demo</h1>
-        <div className="flex gap-4">
-          <Link
-            to="/login"
-            className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition"
-          >
-            Login
-          </Link>
-          <Link
-            to="/signup"
-            className="px-4 py-2 border border-indigo-500 text-indigo-600 hover:bg-indigo-50 rounded-lg font-medium transition"
-          >
-            Sign Up
-          </Link>
+        <div className="flex gap-4 items-center">
+          {!userEmail ? (
+            <>
+              <Link
+                to="/login"
+                className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition"
+              >
+                Login
+              </Link>
+              <Link
+                to="/signup"
+                className="px-4 py-2 border border-indigo-500 text-indigo-600 hover:bg-indigo-50 rounded-lg font-medium transition"
+              >
+                Sign Up
+              </Link>
+            </>
+          ) : (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={async () => {
+                  console.log('Access token:', accessToken);
+                  // If accessToken is missing (e.g., another tab logged out), redirect immediately
+                  if (!accessToken) {
+                    setUserInfo(null);
+                    setUserEmail(null);
+                    navigate('/login');
+                    return;
+                  }
+
+                  // Re-check session before showing dashboard so other-tab logouts
+                  // or expired sessions are respected immediately.
+                  try {
+                    const res = await api.get('/user/me');
+                    setUserInfo(res.data || null);
+                    setUserEmail(res.data?.email || null);
+                    setShowDashboard((s) => !s);
+                  } catch (e) {
+                    // If unauthorized, clear local token/state and redirect to login
+                    tokenService.setToken(null);
+                    setUserInfo(null);
+                    setUserEmail(null);
+                    navigate('/login');
+                  }
+                }}
+                className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition"
+              >
+                Dashboard
+              </button>
+              <button
+                onClick={async () => {
+                  await logout();
+                  navigate('/login');
+                }}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition"
+              >
+                Logout
+              </button>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -39,26 +109,28 @@ export default function Home() {
           subtitle="Experience smooth, interactive 3D login and sign-up forms built with React + Framer Motion. Explore modern UI animation, form validation, and responsive design."
         />
 
-        {/* 🎯 CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-          className="flex gap-4 mt-10"
-        >
-          <Link
-            to="/login"
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition shadow-md hover:shadow-lg"
+        {/* 🎯 CTA Buttons (hidden when logged in) */}
+        {!userEmail && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
+            className="flex gap-4 mt-10"
           >
-            Get Started
-          </Link>
-          <Link
-            to="/signup"
-            className="px-6 py-3 border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 rounded-xl font-semibold transition"
-          >
-            Create Account
-          </Link>
-        </motion.div>
+            <Link
+              to="/login"
+              className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition shadow-md hover:shadow-lg"
+            >
+              Get Started
+            </Link>
+            <Link
+              to="/signup"
+              className="px-6 py-3 border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 rounded-xl font-semibold transition"
+            >
+              Create Account
+            </Link>
+          </motion.div>
+        )}
 
         {/* 🪩 Floating 3D Elements */}
         <motion.div
@@ -104,6 +176,38 @@ export default function Home() {
 
       <FloatingHearts />
 
+      {/* Dashboard modal */}
+      {showDashboard && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-2xl shadow-2xl w-96 max-w-[90%] border border-indigo-50">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 flex items-center justify-center bg-indigo-100 text-indigo-600 rounded-full text-xl font-bold">
+                {userInfo?.email ? userInfo.email.charAt(0).toUpperCase() : 'U'}
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-gray-800">User Dashboard</h3>
+                <p className="text-sm text-gray-500">{userInfo?.email}</p>
+              </div>
+            </div>
+            <div className="mt-4 space-y-2 text-sm text-gray-600">
+              <div>
+                <span className="font-medium text-gray-700">Joined:</span>{' '}
+                {userInfo?.createdAt ? new Date(userInfo.createdAt).toLocaleString() : 'N/A'}
+              </div>
+              {userInfo?.name && (
+                <div>
+                  <span className="font-medium text-gray-700">Name:</span>{' '}
+                  {userInfo.name}
+                </div>
+              )}
+            </div>
+            <div className="mt-6 flex justify-end">
+              <button onClick={() => setShowDashboard(false)} className="px-4 py-2 bg-indigo-50 text-indigo-700 rounded-lg">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ⚙️ Footer */}
       <footer className="bg-white/70 backdrop-blur-md text-center py-4 shadow-inner text-gray-600 text-sm">
         <p>
@@ -112,6 +216,7 @@ export default function Home() {
         </p>
       </footer>
     </div>
+      
      </motion.div>
   );
 }

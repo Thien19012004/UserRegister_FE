@@ -5,7 +5,8 @@ import "./index.css";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import FloatingTextOverlay from "./components/FloatingTextOverlay";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from 'framer-motion';
+import { AuthProvider } from './auth/AuthProvider';
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <AuthProvider>
       <BrowserRouter>
       <FloatingTextOverlay
           phrases={["Authorization", "Login", "Sign Up", "Thien", "Haha", "Hoho", "Hehe"]}
@@ -38,6 +40,7 @@ function App() {
         />
         <AnimatedRoutes/>
       </BrowserRouter>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
