@@ -20,16 +20,16 @@ export default function FloatingTextOverlay({
   speedMin = 20,
   speedMax = 45,
 }: FloatingTextOverlayProps) {
-  // Tạo “seed” một lần để overlay ổn định giữa các re-render
+  
   const bands = useMemo(() => {
     return Array.from({ length: rows }).map((_, rowIdx) => {
-      const angle = rand(-8, 8);               // xoay nhẹ cả dải -> cảm giác 3D
-      const top = (rowIdx + 1) * (100 / (rows + 1)); // vị trí dọc %
-      const speed = rand(speedMin, speedMax);  // thời gian 1 vòng trôi
-      const dir = rowIdx % 2 === 0 ? 1 : -1;   // luân phiên trái↔phải
-      const opacity = rand(0.08, 0.18);        // rất mờ để không gây rối
-      const size = rand(20, 36);               // kích thước font
-      const blur = rand(0, 1.5);               // chút blur nhẹ
+      const angle = rand(-8, 8);              
+      const top = (rowIdx + 1) * (100 / (rows + 1)); 
+      const speed = rand(speedMin, speedMax);  
+      const dir = rowIdx % 2 === 0 ? 1 : -1;   
+      const opacity = rand(0.08, 0.18);        
+      const size = rand(20, 36);               
+      const blur = rand(0, 1.5);              
       const words = Array.from({ length: density }).map(() => {
         const text = phrases[Math.floor(Math.random() * phrases.length)];
         return { text, gap: rand(24, 80) };
@@ -57,7 +57,7 @@ export default function FloatingTextOverlay({
           }}
         >
           <motion.div
-            // marquee theo trục X vô hạn (đổi chiều theo dir)
+          
             animate={{ x: b.dir > 0 ? ["-20vw", "-160vw"] : ["-160vw", "-20vw"] }}
             transition={{
               duration: b.speed,
@@ -76,7 +76,7 @@ export default function FloatingTextOverlay({
                     style={{
                       fontSize: `${b.size}px`,
                       marginRight: `${w.gap}px`,
-                      // Nhìn “outline” nhẹ để giống bóng chữ xa xa
+                  
                       WebkitTextStroke: "1px rgba(0,0,0,0.08)",
                       color: "rgba(31,41,55,0.25)",
                       fontWeight: 800,

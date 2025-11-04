@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 interface Heart {
   id: number;
-  x: number; // vị trí ngang ban đầu
+  x: number; 
   size: number;
   delay: number;
   duration: number;
