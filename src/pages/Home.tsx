@@ -39,7 +39,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-linear-to-br from-indigo-100 via-white to-blue-100 text-gray-800 overflow-hidden">
       {/* 🌟 Navbar */}
       <nav className="flex justify-between items-center px-8 py-4 bg-white/70 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <h1 className="text-2xl font-bold text-indigo-600">Register Demo</h1>
+        <h1 className="text-2xl font-bold text-indigo-600">Duc Thien's Place</h1>
         <div className="flex gap-4 items-center">
           {!userEmail ? (
             <>
@@ -61,7 +61,6 @@ export default function Home() {
               <button
                 onClick={async () => {
                   console.log('Access token:', accessToken);
-                  // If accessToken is missing (e.g., another tab logged out), redirect immediately
                   if (!accessToken) {
                     setUserInfo(null);
                     setUserEmail(null);
@@ -69,8 +68,7 @@ export default function Home() {
                     return;
                   }
 
-                  // Re-check session before showing dashboard so other-tab logouts
-                  // or expired sessions are respected immediately.
+                 
                   try {
                     const res = await api.get('/user/me');
                     setUserInfo(res.data || null);
@@ -102,14 +100,14 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* 💫 Hero Section */}
+      {/*  Hero Section */}
       <main className="flex-1 flex flex-col justify-center items-center text-center px-4 relative overflow-hidden">
         <FloatingHeroText
-          title="Welcome to Registration UI 🌐"
+          title="Welcome to Duc Thien's Place 🌐"
           subtitle="Experience smooth, interactive 3D login and sign-up forms built with React + Framer Motion. Explore modern UI animation, form validation, and responsive design."
         />
 
-        {/* 🎯 CTA Buttons (hidden when logged in) */}
+        {/* CTA Buttons (hidden when logged in) */}
         {!userEmail && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -132,7 +130,7 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* 🪩 Floating 3D Elements */}
+        {/*  Floating 3D Elements */}
         <motion.div
           className="absolute top-32 left-10 w-24 h-24 bg-indigo-400/30 rounded-full blur-2xl"
           animate={{
@@ -208,7 +206,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* ⚙️ Footer */}
+      {/*  Footer */}
       <footer className="bg-white/70 backdrop-blur-md text-center py-4 shadow-inner text-gray-600 text-sm">
         <p>
           © {new Date().getFullYear()} Register Demo — built with ❤️ by{" "}
